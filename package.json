@@ -1,0 +1,35 @@
+{
+  "name": "xsview",
+  "displayName": "XsView v1.0",
+  "description": "XsView前台框架",
+  "author": "SiiWay Team",
+  "homepage": "https://siiway.top",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vicons/ionicons5": "^0.13.0",
+    "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
+    "naive-ui": "^2.41.1",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.3.0",
+    "unplugin-vue-components": "^28.7.0",
+    "vue": "^3.5.16",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "terser": "^5.42.0",
+    "typescript": "~5.7.2",
+    "unplugin-auto-import": "^19.3.0",
+    "vfonts": "^0.0.3",
+    "vite": "^6.0.3",
+    "vue-tsc": "^2.1.10"
+  }
+}

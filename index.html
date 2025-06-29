@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Xscore SiiWay" />
+    <title>XsView 1.0</title>
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="/src/main.ts" as="script" crossorigin="anonymous" />
+    <link rel="preload" href="/src/App.vue" as="script" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/IncompleetaItalic.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    
+    <!-- 预连接到Cloudflare CDN -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous" />
+    
+    <!-- 添加关键CSS -->
+    <style>
+      /* 初始化样式 */
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+      #app {
+        height: 100%;
+        width: 100%;
+      }
+      
+      /* 加载动画样式 */
+      #app-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+      .dark-mode #app-loading {
+        background: #121212;
+        color: #fff;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(114, 160, 201, 0.2);
+        border-top: 4px solid #72a0c9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      .loading-text {
+        margin-top: 16px;
+        font-size: 16px;
+        color: #333;
+      }
+      .dark-mode .loading-text {
+        color: #eee;
+      }
+      .loading-progress {
+        width: 200px;
+        height: 4px;
+        background: rgba(114, 160, 201, 0.2);
+        margin-top: 12px;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: #72a0c9;
+        transition: width 0.3s ease;
+      }
+      .loading-logo {
+        margin-bottom: 24px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #72a0c9;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* 检测暗色模式 */
+      @media (prefers-color-scheme: dark) {
+        #app-loading {
+          background: #121212;
+          color: #fff;
+        }
+        .loading-text {
+          color: #eee;
+        }
+      }
+      
+      /* 内联关键CSS */
+      .n-layout-content {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        flex: auto;
+      }
+      a {
+        text-decoration: none;
+        color: #72a0c9;
+      }
+      a:hover {
+        color: #529bdb;
+      }
+      .actual-dark {
+        color-scheme: dark light;
+      }
+      :not(.actual-dark) {
+        color-scheme: light;
+      }
+      :root {
+        font-family: 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+        height: 100%;
+      }
+      
+      /* 内联字体定义 */
+      @font-face {
+        font-family: 'IncompleetaItalic';
+        src: url('/fonts/IncompleetaItalic.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap; /* 确保字体加载时的良好体验 */
+      }
+      .xscore-logo {
+        font-family: 'IncompleetaItalic', sans-serif;
+        font-size: 24px;
+        letter-spacing: 1px;
+        font-weight: normal;
+        text-transform: uppercase;
+      }
+      @media (max-width: 768px) {
+        .xscore-logo {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 改进的加载动画元素 -->
+    <div id="app-loading">
+      <div class="loading-logo">XsView</div>
+      <div class="spinner"></div>
+      <div class="loading-text">正在加载系统...</div>
+      <div class="loading-progress">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+    
+    <div id="app"></div>
+    
+    <!-- 内联关键JavaScript -->
+    <script>
+      // 检测系统颜色模式
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('colorScheme');
+      if ((savedTheme && savedTheme === 'dark') || (prefersDark && !savedTheme)) {
+        document.body.classList.add('dark-mode');
+      }
+      
+      // 添加进度条元素
+      const addProgressBar = () => {
+        const progressBar = document.createElement('div');
+        progressBar.id = 'progress-bar';
+        progressBar.style.position = 'fixed';
+        progressBar.style.top = '0';
+        progressBar.style.left = '0';
+        progressBar.style.height = '2px';
+        progressBar.style.width = '0%';
+        progressBar.style.backgroundColor = '#18a058';
+        progressBar.style.zIndex = '9999';
+        progressBar.style.transition = 'width 0.2s ease-in-out';
+        document.body.appendChild(progressBar);
+      };
+      
+      // 模拟加载进度
+      let progress = 0;
+      const progressBar = document.getElementById('progress-bar');
+      const loadingText = document.querySelector('.loading-text');
+      const progressInterval = setInterval(() => {
+        if (progress < 90) {
+          progress += Math.random() * 10;
+          progressBar.style.width = `${Math.min(progress, 90)}%`;
+          
+          if (progress > 30) loadingText.textContent = '加载资源中...';
+          if (progress > 60) loadingText.textContent = '初始化应用...';
+          if (progress > 90) loadingText.textContent = '即将完成...';
+        }
+      }, 200);
+      
+      // 页面加载完成后处理
+      window.addEventListener('load', () => {
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        loadingText.textContent = '准备就绪';
+        
+        // 短暂延迟后隐藏加载动画
+        setTimeout(() => {
+          const loading = document.getElementById('app-loading');
+          if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => {
+              loading.style.display = 'none';
+            }, 500);
+          }
+        }, 300);
+      });
+      
+      // 添加性能标记
+      performance.mark('app-loading-start');
+    </script>
+    
+    <!-- 使用defer加载主脚本 -->
+    <script type="module" src="/src/main.ts" defer></script>
+  </body>
+</html>
+
