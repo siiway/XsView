@@ -19,7 +19,6 @@ XsView 是SiiWay团队的一个基于 Vue 3、Vite 和 Naive UI 构建的轻量�
 .github/
 public/
 ├── fonts/ # 字体文件(随你删)
-├── vite.svg # 网站图标
 src/
 ├── assets/ # 静态资源
 ├── components/ # 核心UI组件 (Home, Settings, About, BackToTop, SkeletonScreen, ThemeSettings)
