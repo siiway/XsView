@@ -41,17 +41,12 @@ README.md # 本文件
 
     ```bash
     git clone https://github.com/siiway/XsView
-    cd xsview
     ```
 
 2.  **安装依赖**
 
     ```bash
     npm install
-    # 或者使用 yarn
-    # yarn install
-    # 或者使用 pnpm
-    # pnpm install
     *在组件库有更新而本框架没有守时更新的情况下请加--legacy-peer-deps以安装依赖
     ```
 
